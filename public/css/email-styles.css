@@ -1,0 +1,34 @@
+/* Email Template Styles */
+/* This file contains the default styling for all email templates */
+/* All styles are scoped to .email-content to prevent conflicts with main site */
+
+.email-content h1 {
+    font-size: 24px;
+    font-weight: bold;
+    margin: 0 0 16px 0;
+    color: #333;
+}
+
+.email-content p {
+    font-size: 16px;
+    margin: 0 0 16px 0;
+    color: #555;
+}
+
+.email-content a {
+    color: #0066cc;
+    text-decoration: underline;
+}
+
+/* Company-specific styles can be added here */
+.email-content.acme-custom {
+    /* Acme Corporation specific styles */
+}
+
+.email-content.global-custom {
+    /* Global Industries specific styles */
+}
+
+.email-content.techstart-custom {
+    /* TechStart Inc specific styles */
+}
