@@ -1,0 +1,19 @@
+# Email Template Resolution
+
+## Fallback Logic
+
+| Level | Company | Language | Template Source | Example |
+|-------|---------|----------|----------------|---------|
+| 1 | Yes | Requested | Company Custom | Acme welcome in Spanish |
+| 2 | Yes | English | Company Fallback | Acme welcome in English |
+| 3 | No | Requested | Platform Default | Platform welcome in Spanish |
+| 4 | No | English | Platform Fallback | Platform welcome in English |
+
+## Test Scenarios
+
+| Company | Type | Language | Result |
+|---------|------|----------|--------|
+| Acme | welcome_user | en | Acme custom (Level 1) |
+| Acme | welcome_user | es | Acme custom EN (Level 2) |
+| TechStart | welcome_user | es | Platform ES (Level 3) |
+| Acme | password_reset | fr | Platform EN (Level 4) |
