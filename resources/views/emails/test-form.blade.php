@@ -77,16 +77,16 @@
                     <div>
                         <h4 class="font-medium text-gray-900 mb-2">{{ __('pages.email_test.fallback_info.title') }}</h4>
                         <div class="text-sm text-gray-700 space-y-1">
-                            <p class="{{ session('email_data.fallback_level') == 1 ? 'text-blue-600 font-semibold' : '' }}">
+                            <p class="{{ session('email_data.fallback_level') == 1 ? 'text-green-600 font-semibold' : '' }}">
                                 <strong>{{ __('pages.email_test.fallback_info.level1') }}</strong>
                             </p>
-                            <p class="{{ session('email_data.fallback_level') == 2 ? 'text-blue-600 font-semibold' : '' }}">
+                            <p class="{{ session('email_data.fallback_level') == 2 ? 'text-yellow-600 font-semibold' : '' }}">
                                 <strong>{{ __('pages.email_test.fallback_info.level2') }}</strong>
                             </p>
-                            <p class="{{ session('email_data.fallback_level') == 3 ? 'text-blue-600 font-semibold' : '' }}">
+                            <p class="{{ session('email_data.fallback_level') == 3 ? 'text-orange-600 font-semibold' : '' }}">
                                 <strong>{{ __('pages.email_test.fallback_info.level3') }}</strong>
                             </p>
-                            <p class="{{ session('email_data.fallback_level') == 4 ? 'text-blue-600 font-semibold' : '' }}">
+                            <p class="{{ session('email_data.fallback_level') == 4 ? 'text-red-600 font-semibold' : '' }}">
                                 <strong>{{ __('pages.email_test.fallback_info.level4') }}</strong>
                             </p>
                         </div>

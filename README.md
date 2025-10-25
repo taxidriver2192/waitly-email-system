@@ -2,80 +2,118 @@
 
 Multi-tenant SaaS email template system with intelligent localization fallback.
 
-## Quick Setup
+**Repository**: [github.com/taxidriver2192/waitly-email-system](https://github.com/taxidriver2192/waitly-email-system)  
+**For**: Morten & the Waitly team  
+**Purpose**: Case submission showing backend structure and fallback logic
 
+---
+
+## Quick Start
+
+**Prerequisites:**
+- Docker & Docker Compose installed
+- Git installed
+
+**Setup:**
 ```bash
-# 1. Install dependencies
+# 1. Clone the repository
+git clone git@github.com:taxidriver2192/waitly-email-system.git
+cd waitly-email-system
+
+# 2. Install dependencies
 composer install
 
-# 2. Start Docker containers
+# 3. Start Docker containers
 ./vendor/bin/sail up -d
 
-# 3. Generate app key
+# 4. Generate application key
 ./vendor/bin/sail artisan key:generate
 
-# 4. Run migrations and seeders
+# 5. Run migrations and seeders
 ./vendor/bin/sail artisan migrate --seed
 
-# 5. Install frontend dependencies
+# 6. Install and build frontend assets
 ./vendor/bin/sail npm install
 ./vendor/bin/sail npm run dev
 ```
 
-## Testing the System
-
-### Web Interface
+**Access the application:**
 - **Users**: http://localhost:8080/users
 - **Email Testing**: http://localhost:8080/email-test
-  - Interactive form with company/language selection
-  - Actually sends emails (same as CLI)
-  - Shows email preview and fallback level
 
-### CLI Testing (All 4 Fallback Levels)
+### If Laravel Sail is not installed
+
+If you don't have Laravel Sail installed, you can install it globally:
 ```bash
-./vendor/bin/sail artisan email:test acme welcome_user en      # Level 1: Company custom
-./vendor/bin/sail artisan email:test acme welcome_user es      # Level 2: Company fallback  
-./vendor/bin/sail artisan email:test techstart welcome_user es # Level 3: Platform default
-./vendor/bin/sail artisan email:test acme password_reset fr   # Level 4: Final fallback
-# Automatically selects a random user from the specified company
+composer global require laravel/sail
 ```
 
-### View Email Logs
+## How It Works
+
+### The Fallback Logic (4 Tiers)
+The system prioritizes like this:
+
+1. **Company + Requested Language** ← Best match
+2. **Company + English** ← Company custom, language fallback
+3. **Platform + Requested Language** ← System default, language preserved
+4. **Platform + English** ← Final safety net (never fails)
+
+### Database Structure
+```
+companies
+├── email_templates
+│   └── email_template_translations (language variants)
+└── users
+```
+
+Platform defaults use `company_id = NULL` to keep things clean and separate.
+
+---
+
+## Testing It
+
+### Web Interface
+- Company & language dropdowns
+- Live preview showing which tier you hit
+
+### CLI (See All 4 Tiers)
 ```bash
-./vendor/bin/sail logs
-# Both CLI and web form log identical information
+./vendor/bin/sail artisan email:test acme welcome_user en      # Tier 1
+./vendor/bin/sail artisan email:test acme welcome_user es      # Tier 2
+./vendor/bin/sail artisan email:test techstart welcome_user es # Tier 3
+./vendor/bin/sail artisan email:test acme password_reset fr   # Tier 4
 ```
 
-## Architecture Decisions
+---
 
-### Why This Structure?
-- **Single database**: Simpler than multi-database for 2-3 hour scope
-- **Normalized schema**: Separate translations table for scalability
-- **company_id = NULL**: Clean way to identify platform defaults
-- **4-tier fallback**: Ensures emails always work, prevents broken user experience
+## Design Choices
 
-### Database Design
-```
-companies → email_templates → email_template_translations
-    ↓              ↓                    ↓
-  users    email_template_types    languages
-```
+- **Single database** – Simpler for a 2-3 hour scope; multi-tenant complexity via `company_id`
+- **Normalized schema** – Separates templates from translations so languages scale independently
+- **NULL for platform defaults** – Clear semantic meaning: no company = system default
+- **4-tier fallback** – Covers all real scenarios; users never get broken emails
 
-### Fallback Logic
-1. **Company + Requested Language** - Best case scenario
-2. **Company + English** - Company fallback when localization missing
-3. **Platform + Requested Language** - System default with localization
-4. **Platform + English** - Guaranteed fallback (never fails)
+---
 
-## Demo Data Included
-- **3 Companies**: Acme (has custom welcome), Global Industries, TechStart
-- **4 Languages**: Danish, English, Spanish, French
-- **2 Template Types**: Welcome User, Password Reset
-- **Realistic scenarios**: Tests all 4 fallback levels
+## Demo Included
+- 3 companies with different customization levels
+- 4 languages (Danish, English, Spanish, French)
+- 2 template types (Welcome, Password Reset)
+- Pre-seeded scenarios that hit all 4 fallback tiers
+
+---
 
 ## Tech Stack
-- **Laravel 12** - Latest stable framework
-- **MySQL 8.0** - Production-ready database
-- **Laravel Sail** - Docker development environment
-- **Tailwind CSS** - Modern responsive UI
-- **Pure Laravel** - No third-party packages, demonstrates framework mastery
+- Laravel 12
+- MySQL 8.0
+- Laravel Sail (Docker)
+- Tailwind CSS
+- Pure Laravel (no extra packages)
+
+---
+
+## Key Files to Review
+- `app/Services/EmailTemplateService.php` – The fallback logic
+- `database/migrations/` – Schema decisions
+- `database/seeders/` – Demo data and scenarios
+- `routes/web.php` – Entry points
